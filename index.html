@@ -3,221 +3,271 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>スタディタイマー & ログ</title>
+    <title>Cafe Study Timer</title>
     <style>
+        /* カフェをイメージした配色（アースカラー） */
         :root {
-            --bg-color: #f4f7f6;
-            --card-bg: #ffffff;
-            --primary-color: #4a90e2;
-            --pomodoro-color: #ff6b6b;
-            --short-break-color: #51cf66;
-            --text-color: #333333;
+            --bg-color: #f7f4ef;        /* ミルクたっぷりのカフェラテ（背景） */
+            --card-bg: #ffffff;         /* 清潔感のあるリネン（カード裏地） */
+            --primary-coffee: #5c4033;  /* 深煎りコーヒー（メイン文字・アクティブ色） */
+            --accent-latte: #c8b195;    /* ふんわりラテアート（サブ色・ボーダー） */
+            --accent-green: #7d8c7c;    /* カフェの観葉植物（スタート・ポジティブ色） */
+            --accent-terracotta: #c97a63; /* レンガの壁（ポモドーロ休憩・アラート色） */
+            --text-main: #3e2723;       /* カカオニブ（メインテキスト） */
+            --text-sub: #8d7768;        /* シナモンパウダー（補足テキスト） */
         }
 
         body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'Georgia', 'Noto Serif JP', 'Hiragino Mincho ProN', serif;
             background-color: var(--bg-color);
-            color: var(--text-color);
+            color: var(--text-main);
             margin: 0;
-            padding: 20px;
+            padding: 40px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            letter-spacing: 0.05em;
         }
 
+        /* 全体コンテナ（カフェのメニュー表を意識） */
         .container {
-            max-width: 500px;
+            max-width: 480px;
             width: 100%;
             background: var(--card-bg);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            padding: 40px 30px;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(92, 64, 51, 0.06);
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(200, 177, 149, 0.3);
         }
 
         h1 {
             margin-top: 0;
-            font-size: 24px;
-            color: #444;
+            font-size: 26px;
+            font-weight: 600;
+            color: var(--primary-coffee);
+            font-family: 'Times New Roman', serif;
+            letter-spacing: 0.1em;
+            margin-bottom: 5px;
         }
 
-        /* タブ切り替え */
+        .subtitle {
+            font-size: 12px;
+            color: var(--text-sub);
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+
+        /* ナチュラルなタブ切り替え */
         .tabs {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 30px;
-            background: #eee;
-            padding: 5px;
-            border-radius: 8px;
+            margin-bottom: 35px;
+            background: #f0eae1;
+            padding: 6px;
+            border-radius: 30px;
         }
 
         .tab-btn {
             flex: 1;
-            padding: 10px;
+            padding: 12px 10px;
             background: none;
             border: none;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
-            color: #666;
-            border-radius: 6px;
-            transition: all 0.2s;
+            color: var(--text-sub);
+            border-radius: 25px;
+            transition: all 0.3s ease;
         }
 
         .tab-btn.active {
-            background: var(--primary-color);
-            color: white;
+            background: var(--primary-coffee);
+            color: #ffffff;
+            box-shadow: 0 4px 10px rgba(92, 64, 51, 0.2);
         }
 
-        /* タイマー表示表示 */
-        .timer-display {
-            font-size: 64px;
-            font-weight: bold;
-            margin: 20px 0;
-            font-variant-numeric: tabular-nums;
-        }
-
+        /* 状態ラベル */
         .status-label {
-            font-size: 18px;
-            font-weight: bold;
-            color: #777;
+            font-size: 15px;
+            font-weight: normal;
+            color: var(--text-sub);
             margin-bottom: 10px;
+            font-style: italic;
         }
 
-        /* コントロール群 */
+        /* 美しいタイマー表示 */
+        .timer-display {
+            font-size: 72px;
+            font-weight: 300;
+            color: var(--primary-coffee);
+            margin: 15px 0 35px 0;
+            font-family: 'Courier New', Courier, monospace; /* 等幅でクラシックに */
+        }
+
+        /* コントロールボタン群 */
         .controls {
             display: flex;
             justify-content: center;
             gap: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         button.main-btn {
-            padding: 12px 30px;
-            font-size: 16px;
+            padding: 14px 35px;
+            font-size: 14px;
             font-weight: bold;
             border: none;
-            border-radius: 25px;
+            border-radius: 30px;
             cursor: pointer;
-            transition: transform 0.1s, opacity 0.2s;
+            transition: all 0.2s ease;
+            letter-spacing: 0.1em;
+        }
+
+        button.main-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
         }
 
         button.main-btn:active {
-            transform: scale(0.98);
+            transform: translateY(1px);
         }
 
-        .start-btn { background-color: #20c997; color: white; }
-        .pause-btn { background-color: #fcc419; color: white; }
-        .reset-btn { background-color: #adb5bd; color: white; }
+        .start-btn { background-color: var(--accent-green); color: white; }
+        .pause-btn { background-color: var(--accent-latte); color: var(--primary-coffee); }
+        .reset-btn { background-color: transparent; color: var(--text-sub); border: 1px solid var(--accent-latte) !important; }
 
-        /* カスタム設定用 */
+        /* カスタム設定エリア */
         .custom-inputs {
             display: none;
             justify-content: center;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            color: var(--text-main);
         }
 
         .custom-inputs input {
-            width: 70px;
-            padding: 8px;
-            font-size: 16px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            width: 60px;
+            padding: 8px 10px;
+            font-size: 15px;
+            border: 1px solid var(--accent-latte);
+            background-color: var(--bg-color);
+            color: var(--primary-coffee);
+            border-radius: 8px;
             text-align: center;
+            outline: none;
         }
 
-        /* 記録エリア */
+        /* ログ（レコード）エリア */
         .log-container {
-            max-width: 500px;
+            max-width: 480px;
             width: 100%;
             background: var(--card-bg);
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            padding: 30px;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(92, 64, 51, 0.04);
+            border: 1px solid rgba(200, 177, 149, 0.3);
         }
 
         .log-container h2 {
-            font-size: 18px;
+            font-size: 16px;
             margin-top: 0;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
+            border-bottom: 1px dashed var(--accent-latte);
+            padding-bottom: 15px;
             display: flex;
             justify-content: space-between;
+            color: var(--primary-coffee);
+            font-weight: 600;
         }
 
         .log-list {
             list-style: none;
             padding: 0;
             margin: 0;
-            max-height: 200px;
+            max-height: 180px;
             overflow-y: auto;
             text-align: left;
         }
 
         .log-item {
-            padding: 10px 5px;
-            border-bottom: 1px solid #f1f1f1;
-            font-size: 14px;
+            padding: 12px 5px;
+            border-bottom: 1px solid #fcfbfa;
+            font-size: 13px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
+            color: var(--text-main);
         }
 
-        .log-time { color: #888; }
+        .log-time { 
+            color: var(--text-sub); 
+            font-size: 11px;
+        }
+        
+        strong {
+            color: var(--primary-coffee);
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>学習タイマー</h1>
+        <h1>Cafe Study Timer</h1>
+        <div class="subtitle">~ Slow & Steady ~</div>
         
+        <!-- モード切り替えタブ -->
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchMode('pomodoro')">ポモドーロ</button>
-            <button class="tab-btn" onclick="switchMode('stopwatch')">ストップウォッチ</button>
-            <button class="tab-btn" onclick="switchMode('custom')">カスタム</button>
+            <button class="tab-btn active" onclick="switchMode('pomodoro')">Pomodoro</button>
+            <button class="tab-btn" onclick="switchMode('stopwatch')">Stopwatch</button>
+            <button class="tab-btn" onclick="switchMode('custom')">Custom</button>
         </div>
 
         <div class="status-label" id="status-label">集中時間 (25分)</div>
         
+        <!-- カスタムタイマー用入力欄 -->
         <div class="custom-inputs" id="custom-inputs">
-            <input type="number" id="custom-minutes" min="0" max="180" value="10"> 分
-            <button onclick="setCustomTime()" style="padding: 6px 12px; border-radius: 5px; border: 1px solid #ccc; cursor: pointer;">設定</button>
+            <input type="number" id="custom-minutes" min="1" max="180" value="10"> min
+            <button onclick="setCustomTime()" style="padding: 8px 14px; border-radius: 20px; border: 1px solid var(--primary-coffee); background: none; color: var(--primary-coffee); cursor: pointer; font-size: 12px;">変更</button>
         </div>
 
+        <!-- タイマー時間表示 -->
         <div class="timer-display" id="timer-display">25:00</div>
 
+        <!-- 操作ボタン -->
         <div class="controls">
-            <button class="main-btn start-btn" id="start-btn" onclick="startTimer()">スタート</button>
-            <button class="main-btn pause-btn" id="pause-btn" onclick="pauseTimer()" style="display:none;">一時停止</button>
-            <button class="main-btn reset-btn" onclick="resetTimer()">リセット</button>
+            <button class="main-btn start-btn" id="start-btn" onclick="startTimer()">START</button>
+            <button class="main-btn pause-btn" id="pause-btn" onclick="pauseTimer()" style="display:none;">PAUSE</button>
+            <button class="main-btn reset-btn" onclick="resetTimer()">RESET</button>
         </div>
     </div>
 
+    <!-- 勉強時間の記録 -->
     <div class="log-container">
         <h2>
-            <span>📝 勉強の記録</span>
-            <span id="total-study-time" style="font-size: 14px; color: #4a90e2;">合計: 0分</span>
+            <span>☕ 今日のオーダー（記録）</span>
+            <span id="total-study-time" style="font-size: 13px; color: var(--text-sub);">Total: 0 min</span>
         </h2>
         <ul class="log-list" id="log-list">
-            </ul>
+            <!-- JavaScriptでここにログが追加されます -->
+        </ul>
     </div>
 
     <script>
         // 状態管理変数
-        let currentMode = 'pomodoro'; // pomodoro, stopwatch, custom
-        let pomodoroState = 'work';   // work (集中), break (休憩)
+        let currentMode = 'pomodoro'; 
+        let pomodoroState = 'work';   
         let timerInterval = null;
         let isRunning = false;
         
-        // 時間管理（秒単位）
         let timeLeft = 25 * 60; 
         let stopwatchSeconds = 0;
         let customSeconds = 10 * 60;
         let totalStudyMinutes = 0;
 
-        // HTML要素の取得
         const display = document.getElementById('timer-display');
         const statusLabel = document.getElementById('status-label');
         const startBtn = document.getElementById('start-btn');
@@ -226,17 +276,14 @@
         const logList = document.getElementById('log-list');
         const totalDisplay = document.getElementById('total-study-time');
 
-        // モード切り替え
         function switchMode(mode) {
             clearInterval(timerInterval);
             isRunning = false;
             currentMode = mode;
             
-            // ボタン表示の初期化
             startBtn.style.display = 'inline-block';
             pauseBtn.style.display = 'none';
 
-            // タブの活動状態アップデート
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
 
@@ -250,7 +297,7 @@
             } else if (mode === 'stopwatch') {
                 stopwatchSeconds = 0;
                 statusLabel.innerText = "ストップウォッチ";
-                updateDisplay(0, true);
+                updateDisplay(0);
             } else if (mode === 'custom') {
                 customInputs.style.display = 'flex';
                 statusLabel.innerText = "カスタムタイマー";
@@ -258,14 +305,12 @@
             }
         }
 
-        // 時間の表示更新
-        function updateDisplay(seconds, isStopwatch = false) {
+        function updateDisplay(seconds) {
             const mins = Math.floor(seconds / 60);
             const secs = seconds % 60;
             display.innerText = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
         }
 
-        // カスタムタイマーの時間設定
         function setCustomTime() {
             if(isRunning) return;
             const mins = parseInt(document.getElementById('custom-minutes').value) || 10;
@@ -273,7 +318,6 @@
             updateDisplay(customSeconds);
         }
 
-        // タイマースタート
         function startTimer() {
             if (isRunning) return;
             isRunning = true;
@@ -283,9 +327,8 @@
             timerInterval = setInterval(() => {
                 if (currentMode === 'stopwatch') {
                     stopwatchSeconds++;
-                    updateDisplay(stopwatchSeconds, true);
+                    updateDisplay(stopwatchSeconds);
                 } else {
-                    // ポモドーロ、またはカスタムタイマー（カウントダウン）
                     let targetSeconds = currentMode === 'pomodoro' ? timeLeft : customSeconds;
                     targetSeconds--;
 
@@ -305,7 +348,6 @@
             }, 1000);
         }
 
-        // タイマー一時停止
         function pauseTimer() {
             clearInterval(timerInterval);
             isRunning = false;
@@ -313,7 +355,6 @@
             pauseBtn.style.display = 'none';
         }
 
-        // リセット処理
         function resetTimer() {
             clearInterval(timerInterval);
             isRunning = false;
@@ -326,9 +367,8 @@
                 statusLabel.innerText = "集中時間 (25分)";
                 updateDisplay(timeLeft);
             } else if (currentMode === 'stopwatch') {
-                // ストップウォッチはリセット時にそこまで進んだ秒数を「学習記録」に残す
                 if (stopwatchSeconds > 0) {
-                    addLog("ストップウォッチ学習", Math.round(stopwatchSeconds / 60));
+                    addLog("Stopwatch ドリップ", Math.round(stopwatchSeconds / 60));
                 }
                 stopwatchSeconds = 0;
                 updateDisplay(0);
@@ -337,38 +377,34 @@
             }
         }
 
-        // タイマー終了時の処理（カウントダウン）
         function timerFinished() {
-            // アラート音の代わりにブラウザ通知風ポップアップ（音を鳴らしたい場合はAudioオブジェクトを追加してください）
-            alert("時間が経ちました！");
+            alert("Bell が鳴りました。ブレイクタイム、または次のステップへ！");
 
             if (currentMode === 'pomodoro') {
                 if (pomodoroState === 'work') {
-                    addLog("ポモドーロ（集中）", 25);
-                    // 休憩モードへ移行
+                    addLog("Pomodoro (集中)", 25);
                     pomodoroState = 'break';
                     timeLeft = 5 * 60;
                     statusLabel.innerText = "休憩時間 (5分)";
+                    statusLabel.style.color = "var(--accent-terracotta)";
                     updateDisplay(timeLeft);
                 } else {
-                    // 休憩終了、集中モードへ戻る
                     pomodoroState = 'work';
                     timeLeft = 25 * 60;
                     statusLabel.innerText = "集中時間 (25分)";
+                    statusLabel.style.color = "var(--text-sub)";
                     updateDisplay(timeLeft);
                 }
             } else if (currentMode === 'custom') {
                 const mins = parseInt(document.getElementById('custom-minutes').value) || 10;
-                addLog("カスタムタイマー", mins);
+                addLog("Custom タイマー", mins);
                 setCustomTime();
             }
         }
 
-        // ログへの追加
         function addLog(activityName, minutes) {
-            // 最低でも1分未満は1分として記録、または0分ならスキップ
             if (minutes === 0 && currentMode === 'stopwatch' && stopwatchSeconds > 0) {
-                minutes = 1; // 1分未満の計測でもログには1分として残す（または秒表示にする）
+                minutes = 1; 
             }
             if (minutes <= 0) return;
 
@@ -378,16 +414,14 @@
             const li = document.createElement('li');
             li.className = 'log-item';
             li.innerHTML = `
-                <span>${activityName} - <strong>${minutes}分</strong> 完了</span>
+                <span>☕ ${activityName} - <strong>${minutes}分</strong> 淹れました</span>
                 <span class="log-time">${timeString}</span>
             `;
             
-            // ログの先頭に追加
             logList.insertBefore(li, logList.firstChild);
 
-            // 合計時間の更新
             totalStudyMinutes += minutes;
-            totalDisplay.innerText = `合計: ${totalStudyMinutes}分`;
+            totalDisplay.innerText = `Total: ${totalStudyMinutes} min`;
         }
     </script>
 </body>
