@@ -5,41 +5,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cafe Study Timer</title>
     <style>
-        /* カフェをイメージした配色（アースカラー） */
+        /* カフェをイメージした配色 */
         :root {
-            --bg-color: #f7f4ef;        /* ミルクたっぷりのカフェラテ（背景） */
-            --card-bg: #ffffff;         /* 清潔感のあるリネン（カード裏地） */
-            --primary-coffee: #5c4033;  /* 深煎りコーヒー（メイン文字・アクティブ色） */
-            --accent-latte: #c8b195;    /* ふんわりラテアート（サブ色・ボーダー） */
-            --accent-green: #7d8c7c;    /* カフェの観葉植物（スタート・ポジティブ色） */
-            --accent-terracotta: #c97a63; /* レンガの壁（ポモドーロ休憩・アラート色） */
-            --text-main: #3e2723;       /* カカオニブ（メインテキスト） */
-            --text-sub: #8d7768;        /* シナモンパウダー（補足テキスト） */
+            --primary-coffee: #4a2c11;  /* 深煎りコーヒー（メイン文字・アクティブ色） */
+            --accent-latte: #c8b195;    /* ふんわりラテアート */
+            --accent-green: #5a7052;    /* 深みのあるオリーブグリーン（START） */
+            --accent-terracotta: #b85a3a; /* レンガ色（休憩・アラート） */
+            --text-main: #2b1a0a;       /* 濃い目のブラウン */
+            --text-sub: #6e5843;        /* 薄めのブラウン */
         }
 
         body {
             font-family: 'Georgia', 'Noto Serif JP', 'Hiragino Mincho ProN', serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
             margin: 0;
             padding: 40px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
             letter-spacing: 0.05em;
+            
+            /* 背景画像の設定 */
+            background-image: url('cafe.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
         }
 
-        /* 全体コンテナ（カフェのメニュー表を意識） */
-        .container {
-            max-width: 480px;
-            width: 100%;
-            background: var(--card-bg);
-            padding: 40px 30px;
+        /* 音楽コントロールボタン */
+        .audio-control {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 10px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--primary-coffee);
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        .audio-control:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-1px);
+        }
+
+        /* すりガラス風のコンテナ（背景を見せるための調整） */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.65); /* 半透明の白 */
+            backdrop-filter: blur(12px);          /* 背景を程よくぼかす */
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
             border-radius: 24px;
-            box-shadow: 0 15px 35px rgba(92, 64, 51, 0.06);
+        }
+
+        /* 全体コンテナ */
+        .container {
+            max-width: 460px;
+            width: 100%;
+            padding: 40px 30px;
             text-align: center;
-            margin-bottom: 30px;
-            border: 1px solid rgba(200, 177, 149, 0.3);
+            margin-bottom: 25px;
+            margin-top: 40px; /* 上部に少し余白を作って背景を見せる */
         }
 
         h1 {
@@ -53,25 +89,25 @@
         }
 
         .subtitle {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-sub);
             margin-bottom: 30px;
             text-transform: uppercase;
         }
 
-        /* ナチュラルなタブ切り替え */
+        /* タブ切り替え */
         .tabs {
             display: flex;
             justify-content: space-between;
             margin-bottom: 35px;
-            background: #f0eae1;
-            padding: 6px;
+            background: rgba(0, 0, 0, 0.06);
+            padding: 5px;
             border-radius: 30px;
         }
 
         .tab-btn {
             flex: 1;
-            padding: 12px 10px;
+            padding: 11px 10px;
             background: none;
             border: none;
             cursor: pointer;
@@ -85,25 +121,23 @@
         .tab-btn.active {
             background: var(--primary-coffee);
             color: #ffffff;
-            box-shadow: 0 4px 10px rgba(92, 64, 51, 0.2);
+            box-shadow: 0 4px 10px rgba(92, 64, 51, 0.15);
         }
 
-        /* 状態ラベル */
         .status-label {
-            font-size: 15px;
-            font-weight: normal;
+            font-size: 14px;
             color: var(--text-sub);
             margin-bottom: 10px;
             font-style: italic;
         }
 
-        /* 美しいタイマー表示 */
+        /* タイマー表示 */
         .timer-display {
             font-size: 72px;
             font-weight: 300;
             color: var(--primary-coffee);
             margin: 15px 0 35px 0;
-            font-family: 'Courier New', Courier, monospace; /* 等幅でクラシックに */
+            font-family: 'Courier New', Courier, monospace;
         }
 
         /* コントロールボタン群 */
@@ -111,12 +145,11 @@
             display: flex;
             justify-content: center;
             gap: 15px;
-            margin-bottom: 10px;
         }
 
         button.main-btn {
-            padding: 14px 35px;
-            font-size: 14px;
+            padding: 13px 35px;
+            font-size: 13px;
             font-weight: bold;
             border: none;
             border-radius: 30px;
@@ -126,17 +159,13 @@
         }
 
         button.main-btn:hover {
-            opacity: 0.9;
+            opacity: 0.95;
             transform: translateY(-1px);
-        }
-
-        button.main-btn:active {
-            transform: translateY(1px);
         }
 
         .start-btn { background-color: var(--accent-green); color: white; }
         .pause-btn { background-color: var(--accent-latte); color: var(--primary-coffee); }
-        .reset-btn { background-color: transparent; color: var(--text-sub); border: 1px solid var(--accent-latte) !important; }
+        .reset-btn { background-color: transparent; color: var(--text-sub); border: 1px solid rgba(110, 88, 67, 0.5) !important; }
 
         /* カスタム設定エリア */
         .custom-inputs {
@@ -153,29 +182,26 @@
             width: 60px;
             padding: 8px 10px;
             font-size: 15px;
-            border: 1px solid var(--accent-latte);
-            background-color: var(--bg-color);
+            border: 1px solid rgba(110, 88, 67, 0.3);
+            background-color: rgba(255, 255, 255, 0.5);
             color: var(--primary-coffee);
             border-radius: 8px;
             text-align: center;
             outline: none;
         }
 
-        /* ログ（レコード）エリア */
+        /* ログエリア */
         .log-container {
-            max-width: 480px;
+            max-width: 460px;
             width: 100%;
-            background: var(--card-bg);
             padding: 30px;
-            border-radius: 24px;
-            box-shadow: 0 15px 35px rgba(92, 64, 51, 0.04);
-            border: 1px solid rgba(200, 177, 149, 0.3);
+            box-sizing: border-box;
         }
 
         .log-container h2 {
-            font-size: 16px;
+            font-size: 15px;
             margin-top: 0;
-            border-bottom: 1px dashed var(--accent-latte);
+            border-bottom: 1px dashed rgba(110, 88, 67, 0.3);
             padding-bottom: 15px;
             display: flex;
             justify-content: space-between;
@@ -187,14 +213,14 @@
             list-style: none;
             padding: 0;
             margin: 0;
-            max-height: 180px;
+            max-height: 160px;
             overflow-y: auto;
             text-align: left;
         }
 
         .log-item {
             padding: 12px 5px;
-            border-bottom: 1px solid #fcfbfa;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             font-size: 13px;
             display: flex;
             justify-content: space-between;
@@ -206,20 +232,18 @@
             color: var(--text-sub); 
             font-size: 11px;
         }
-        
-        strong {
-            color: var(--primary-coffee);
-            font-weight: 600;
-        }
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <audio id="bgm" src="cafe.mp3" loop></audio>
+
+    <button class="audio-control" id="audio-toggle" onclick="toggleBGM()">🎵 BGM: OFF</button>
+
+    <div class="container glass-card">
         <h1>Cafe Study Timer</h1>
         <div class="subtitle">~ Slow & Steady ~</div>
         
-        <!-- モード切り替えタブ -->
         <div class="tabs">
             <button class="tab-btn active" onclick="switchMode('pomodoro')">Pomodoro</button>
             <button class="tab-btn" onclick="switchMode('stopwatch')">Stopwatch</button>
@@ -228,16 +252,13 @@
 
         <div class="status-label" id="status-label">集中時間 (25分)</div>
         
-        <!-- カスタムタイマー用入力欄 -->
         <div class="custom-inputs" id="custom-inputs">
             <input type="number" id="custom-minutes" min="1" max="180" value="10"> min
             <button onclick="setCustomTime()" style="padding: 8px 14px; border-radius: 20px; border: 1px solid var(--primary-coffee); background: none; color: var(--primary-coffee); cursor: pointer; font-size: 12px;">変更</button>
         </div>
 
-        <!-- タイマー時間表示 -->
         <div class="timer-display" id="timer-display">25:00</div>
 
-        <!-- 操作ボタン -->
         <div class="controls">
             <button class="main-btn start-btn" id="start-btn" onclick="startTimer()">START</button>
             <button class="main-btn pause-btn" id="pause-btn" onclick="pauseTimer()" style="display:none;">PAUSE</button>
@@ -245,19 +266,15 @@
         </div>
     </div>
 
-    <!-- 勉強時間の記録 -->
-    <div class="log-container">
+    <div class="log-container glass-card">
         <h2>
             <span>☕ 今日のオーダー（記録）</span>
             <span id="total-study-time" style="font-size: 13px; color: var(--text-sub);">Total: 0 min</span>
         </h2>
-        <ul class="log-list" id="log-list">
-            <!-- JavaScriptでここにログが追加されます -->
-        </ul>
+        <ul class="log-list" id="log-list"></ul>
     </div>
 
     <script>
-        // 状態管理変数
         let currentMode = 'pomodoro'; 
         let pomodoroState = 'work';   
         let timerInterval = null;
@@ -275,6 +292,26 @@
         const customInputs = document.getElementById('custom-inputs');
         const logList = document.getElementById('log-list');
         const totalDisplay = document.getElementById('total-study-time');
+        
+        // BGMの再生・停止管理
+        const bgm = document.getElementById('bgm');
+        const audioToggle = document.getElementById('audio-toggle');
+
+        function toggleBGM() {
+            if (bgm.paused) {
+                bgm.play().catch(error => {
+                    console.log("ブラウザの制限により自動再生がブロックされました。ユーザーの操作が必要です。");
+                });
+                audioToggle.innerText = "🎵 BGM: ON";
+                audioToggle.style.background = "var(--primary-coffee)";
+                audioToggle.style.color = "#ffffff";
+            } else {
+                bgm.pause();
+                audioToggle.innerText = "🎵 BGM: OFF";
+                audioToggle.style.background = "rgba(255, 255, 255, 0.75)";
+                audioToggle.style.color = "var(--primary-coffee)";
+            }
+        }
 
         function switchMode(mode) {
             clearInterval(timerInterval);
@@ -285,7 +322,7 @@
             pauseBtn.style.display = 'none';
 
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            if(event) event.target.classList.add('active');
 
             customInputs.style.display = 'none';
 
