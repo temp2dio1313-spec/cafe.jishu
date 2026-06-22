@@ -58,7 +58,7 @@
             transform: translateY(-1px);
         }
 
-        /* すりガラス風のコンテナ（背景を見せるための調整） */
+        /* すりガラス風のコンテナ */
         .glass-card {
             background: rgba(255, 255, 255, 0.65); /* 半透明の白 */
             backdrop-filter: blur(12px);          /* 背景を程よくぼかす */
@@ -75,7 +75,7 @@
             padding: 40px 30px;
             text-align: center;
             margin-bottom: 25px;
-            margin-top: 40px; /* 上部に少し余白を作って背景を見せる */
+            margin-top: 40px;
         }
 
         h1 {
@@ -238,7 +238,7 @@
 
     <audio id="bgm" src="cafe.mp3" loop></audio>
 
-    <button class="audio-control" id="audio-toggle" onclick="toggleBGM()">🎵 BGM: OFF</button>
+    <button class="audio-control" id="audio-toggle" onclick="toggleBGM()">BGM: OFF</button>
 
     <div class="container glass-card">
         <h1>Cafe Study Timer</h1>
@@ -268,7 +268,7 @@
 
     <div class="log-container glass-card">
         <h2>
-            <span>☕ 今日のオーダー（記録）</span>
+            <span>Study Log</span>
             <span id="total-study-time" style="font-size: 13px; color: var(--text-sub);">Total: 0 min</span>
         </h2>
         <ul class="log-list" id="log-list"></ul>
@@ -293,21 +293,20 @@
         const logList = document.getElementById('log-list');
         const totalDisplay = document.getElementById('total-study-time');
         
-        // BGMの再生・停止管理
         const bgm = document.getElementById('bgm');
         const audioToggle = document.getElementById('audio-toggle');
 
         function toggleBGM() {
             if (bgm.paused) {
                 bgm.play().catch(error => {
-                    console.log("ブラウザの制限により自動再生がブロックされました。ユーザーの操作が必要です。");
+                    console.log("BGM playback blocked by browser.");
                 });
-                audioToggle.innerText = "🎵 BGM: ON";
+                audioToggle.innerText = "BGM: ON";
                 audioToggle.style.background = "var(--primary-coffee)";
                 audioToggle.style.color = "#ffffff";
             } else {
                 bgm.pause();
-                audioToggle.innerText = "🎵 BGM: OFF";
+                audioToggle.innerText = "BGM: OFF";
                 audioToggle.style.background = "rgba(255, 255, 255, 0.75)";
                 audioToggle.style.color = "var(--primary-coffee)";
             }
@@ -405,7 +404,7 @@
                 updateDisplay(timeLeft);
             } else if (currentMode === 'stopwatch') {
                 if (stopwatchSeconds > 0) {
-                    addLog("Stopwatch ドリップ", Math.round(stopwatchSeconds / 60));
+                    addLog("Stopwatch", Math.round(stopwatchSeconds / 60));
                 }
                 stopwatchSeconds = 0;
                 updateDisplay(0);
@@ -415,11 +414,11 @@
         }
 
         function timerFinished() {
-            alert("Bell が鳴りました。ブレイクタイム、または次のステップへ！");
+            alert("設定した時間が経過しました。次のステップへ進みましょう。");
 
             if (currentMode === 'pomodoro') {
                 if (pomodoroState === 'work') {
-                    addLog("Pomodoro (集中)", 25);
+                    addLog("Pomodoro (Work)", 25);
                     pomodoroState = 'break';
                     timeLeft = 5 * 60;
                     statusLabel.innerText = "休憩時間 (5分)";
@@ -434,7 +433,7 @@
                 }
             } else if (currentMode === 'custom') {
                 const mins = parseInt(document.getElementById('custom-minutes').value) || 10;
-                addLog("Custom タイマー", mins);
+                addLog("Custom Timer", mins);
                 setCustomTime();
             }
         }
@@ -451,7 +450,7 @@
             const li = document.createElement('li');
             li.className = 'log-item';
             li.innerHTML = `
-                <span>☕ ${activityName} - <strong>${minutes}分</strong> 淹れました</span>
+                <span>${activityName} - <strong>${minutes} min</strong> 完了</span>
                 <span class="log-time">${timeString}</span>
             `;
             
