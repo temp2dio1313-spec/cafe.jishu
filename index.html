@@ -34,6 +34,31 @@
             background-repeat: no-repeat;
         }
 
+        /* 戻るボタンのスタイル */
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--primary-coffee);
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            text-decoration: none;
+        }
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-1px);
+        }
+
         /* 音楽コントロールボタン */
         .audio-control {
             position: fixed;
@@ -236,6 +261,8 @@
 </head>
 <body>
 
+    <button class="back-button" onclick="goBack()">Back</button>
+
     <audio id="bgm" src="cafe.mp3" loop></audio>
 
     <button class="audio-control" id="audio-toggle" onclick="toggleBGM()">BGM: OFF</button>
@@ -295,6 +322,16 @@
         
         const bgm = document.getElementById('bgm');
         const audioToggle = document.getElementById('audio-toggle');
+
+        // 前のページに戻る関数
+        function goBack() {
+            if (history.length > 1) {
+                history.back();
+            } else {
+                // 前の履歴がない場合のフォールバック（例: トップページへ遷移など）
+                console.log("前の履歴がありません。");
+            }
+        }
 
         function toggleBGM() {
             if (bgm.paused) {
